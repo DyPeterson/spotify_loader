@@ -1,5 +1,6 @@
 import pandas as pd
 import sqlalchemy as sa
+from sqlalchemy import Column, String, Numeric
 
 
 class DataLoader():
@@ -94,7 +95,27 @@ def db_create_tables(db_engine, drop_first:bool = False) -> None:
 
     # your code to define tables go in here
     #   - Be careful, some of the columns like album.available_markets are very long. Make sure you give enough DB length for these. ie: 10240 (10kb)
+    # ,href,id,images,name,release_date,release_date_precision,total_tracks,track_id,track_name_prev,uri,type
+    albums_table = sa.Table('albums',
+        meta,
+        Column('album_type', String(256), primary_key=True),
+        Column('artist_id', String(256)),
+        Column('available_markets', String(1024)),
+        Column('external_urls', String(512)),
+        Column('href', String(256)),
+        Column('id', ),
+        Column('images', ),
+        Column('name', ),
+        Column('release_date', ),
+        Column('release_date_precision', ),
+        Column('total_tracks', Numeric),
+        Column('track_id', String(256)),
+        Column('track_name_prev', String(256)),
+        Column('uri', String(256)),
+        Column('type', String(256))
+    )
 
+    # Column('', ),
     # your code to drop and create tables go here
 
 
