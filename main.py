@@ -126,7 +126,10 @@ def db_create_tables(db_engine, drop_first:bool = False) -> None:
         Column('type', String(128)),
         )
     # your code to drop and create tables go here
-
+    if drop_first:
+        meta.drop_all()
+    
+    meta.create_all(checkfirst=True)
 
 
 def main():
