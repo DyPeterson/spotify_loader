@@ -114,11 +114,9 @@ A [Data Stack Academy](https://www.datastack.academy/) code review project to cr
   
 
 ### Details
-
+Uses a DataLoader class to save methods and use them on target files. The methods are used to write csvs to a database. It also includes functions for sorting, displaying previews and merging tables. The intended output is to start a docker container running MariaDB, create tables within a database and then populate them with CSV data.
 
 Contact me with any questions or suggestions [Here](dylan.peterson17@gmail.com)
-
-  
 
 ### Known Bugs
 
