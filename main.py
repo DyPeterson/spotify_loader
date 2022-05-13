@@ -1,6 +1,6 @@
 import pandas as pd
 import sqlalchemy as sa
-from sqlalchemy import Column, String, Numeric
+from sqlalchemy import Table, Column, String, Numeric, Date
 
 
 class DataLoader():
@@ -95,28 +95,38 @@ def db_create_tables(db_engine, drop_first:bool = False) -> None:
 
     # your code to define tables go in here
     #   - Be careful, some of the columns like album.available_markets are very long. Make sure you give enough DB length for these. ie: 10240 (10kb)
-    # ,href,id,images,name,release_date,release_date_precision,total_tracks,track_id,track_name_prev,uri,type
-    albums_table = sa.Table('albums',
+    # 
+    albums_table = Table('albums',
         meta,
         Column('album_type', String(256), primary_key=True),
         Column('artist_id', String(256)),
         Column('available_markets', String(1024)),
         Column('external_urls', String(512)),
         Column('href', String(256)),
-        Column('id', ),
-        Column('images', ),
-        Column('name', ),
-        Column('release_date', ),
-        Column('release_date_precision', ),
+        Column('id', String(256)),
+        Column('images', String(1024)),
+        Column('name', String(1024)),
+        Column('release_date', Date),
+        Column('release_date_precision', String(128)),
         Column('total_tracks', Numeric),
         Column('track_id', String(256)),
         Column('track_name_prev', String(256)),
         Column('uri', String(256)),
         Column('type', String(256))
     )
-
-    # Column('', ),
+    artists_table = Table('artists',
+        meta,
+        Column('artist_popularity', Numeric),
+        Column('followers', Numeric),
+        Column('genres', String(1024)),
+        Column('id', String(256)),
+        Column('name', String(256)),
+        Column('track_id', String(128)),
+        Column('track_name_prev', String(128)),
+        Column('type', String(128)),
+        )
     # your code to drop and create tables go here
+
 
 
 def main():
