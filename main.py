@@ -65,7 +65,7 @@ class DataLoader():
         df = self.df
         # write to sql taking db table name as the name, db_engine as the engine if this already exists append it to existing table
         # write 2000 rows at a time.
-        df.to_sql(db_table_name, con=db_engine, if_exists="append", chunksize=2000)
+        df.to_sql(db_table_name, db_engine, if_exists="append", chunksize=2000)
         self.df = df
 
     def merge_tables(self, dataframe, left_on, right_on, join_cols, col_sort_by, how='left'):
@@ -124,7 +124,8 @@ def db_create_tables(db_engine, drop_first:bool = False) -> None:
         Column("track_id", String(256)),
         Column("track_name_prev", String(256)),
         Column("uri", String(256)),
-        Column("type", String(256))
+        Column("type", String(256)),
+        extend_existing=True,
     )
     artists_table = Table("artists",
         meta,
@@ -136,7 +137,9 @@ def db_create_tables(db_engine, drop_first:bool = False) -> None:
         Column("track_id", String(128)),
         Column("track_name_prev", String(128)),
         Column("type", String(128)),
+        extend_existing=True,
         )
+
     # your code to drop and create tables go here
     if drop_first:
         meta.drop_all()
@@ -167,17 +170,19 @@ def main():
     artist_data.head()
     album_data.head()
     # set index of both data sets
-    artist_data.add_index("artist_index", ["id"])
+    artist_data.add_index("id", ["id"])
     album_data.add_index("albums_index", ["artist_id","id","release_date"])
     # sort artist by name
     artist_data.sort("name")
     # create db engine
-    engine = db_engine(db_host="127.0.0.1", db_user="root", db_pass="mysql", db_name="spotify")
+    engine = db_engine(db_host="127.0.0.1:3306", db_user="root", db_pass="mysql")
     # create db metadata table/columns
     db_create_tables(engine, drop_first=True)
     # load both in db
-    artist_data.load_to_db(engine, "artists")
+    artist_data.load_to_db(engine, 'artists')
     album_data.load_to_db(engine, "albums")
+    # merge of two tables
+    artist_data.merge_tables(dataframe=artist_data , left_on=artist_data , right_on=album_data , join_cols='id' , col_sort_by='id' , how='left')
 
 if __name__ == "__main__":
     main()
