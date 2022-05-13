@@ -15,7 +15,6 @@ class DataLoader():
         df = pd.read_csv(filepath, header=0)
 
         self.df = df
-        pass
 
     def head(self) -> None:
         """
@@ -146,8 +145,15 @@ def main():
     - creates database metadata tables/columns
     - loads both artists and albums into database
     """
-    pass
-
+    artist_filepath = './data/spotify_artists.csv'
+    album_filepath = './data/spotify_albums.csv'
+    # instance data loader for both csvs
+    artist_data = DataLoader(artist_filepath)
+    album_data = DataLoader(album_filepath)
+    # print head of both
+    artist_data.head()
+    album_data.head()
+    # 
 
 if __name__ == '__main__':
     main()
