@@ -48,6 +48,10 @@ class DataLoader():
         Args:
             column_name (str): column name to sort by
         """
+        df = self.df
+        # Sort dataframe by inputted column_name
+        df.sort_values(column_name)
+        self.df = df
 
     def load_to_db(self, db_engine, db_table_name:str) -> None:
         """
@@ -72,7 +76,8 @@ def db_engine(db_host:str, db_user:str, db_pass:str, db_name:str="spotify") -> s
     Returns:
         sa.engine.Engine: sqlalchemy engine
     """
-    pass
+    engine = sa.create_engine(f'mysql+pymsql://{db_user}:{db_pass}@{db_host}/{db_name}', future=True) 
+    return engine
 
 
 def db_create_tables(db_engine, drop_first:bool = False) -> None:
