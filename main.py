@@ -66,16 +66,17 @@ class DataLoader():
         # write to sql taking db table name as the name, db_engine as the engine if this already exists append it to existing table
         # write 2000 rows at a time.
         df.to_sql(db_table_name, con=db_engine, if_exists="append", chunksize=2000)
-        self.df = self
+        self.df = df
 
-    def merge_tables(self, dataframe, left_on, right_on, join_cols, how='left'):
+    def merge_tables(self, dataframe, left_on, right_on, join_cols, col_sort_by, how='left'):
         """
         Merge DataFrames on specific columns with multiple csvs, limited to an output of 20
         """
         df = self.df
-        df = pd.merge(left= self.df, right=dataframe[join_cols], left_on=left_on, right_on=right_on, how=how)
-        self.df = df.head(20)
-        
+        df = pd.merge(left= self.df, right=dataframe[join_cols], left_on=left_on, right_on=right_on, how=how).head(20)
+        self.df = df.sort_values(col_sort_by ,ascending=False)
+
+
 def db_engine(db_host:str, db_user:str, db_pass:str, db_name:str="spotify") -> sa.engine.Engine:
     """Using SqlAlchemy, create a database engine and return it
 
@@ -173,7 +174,7 @@ def main():
     # create db engine
     engine = db_engine(db_host="127.0.0.1", db_user="root", db_pass="mysql", db_name="spotify")
     # create db metadata table/columns
-    db_create_tables(engine)
+    db_create_tables(engine, drop_first=True)
     # load both in db
     artist_data.load_to_db(engine, "artists")
     album_data.load_to_db(engine, "albums")
