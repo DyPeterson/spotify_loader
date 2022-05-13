@@ -33,13 +33,10 @@ class DataLoader():
             index_name (str): the index column name
             colum_names (list): list of columns to concatenate into an index column
         """
-        #
         df = self.df
         # add multiple column names together with a "-" to create unique columns
         df[index_name] = df[column_names].apply(lambda row: "-".join(row.values.astype(str)), axis=1)
         
-        # for column in column_names:
-        #     new_column_name = "-".join(column)
         # use unique column to set as index
         df.set_index(index_name, inplace=True)
         self.df = df
@@ -71,12 +68,14 @@ class DataLoader():
         df.to_sql(db_table_name, con=db_engine, if_exists="append", chunksize=2000)
         self.df = self
 
-    # def merge_tables(self, dataframe, left_on, right_on, join_cols, how='left'):
-    #     """
-    #     Merge DataFrames on specific columns with multiple csvs, limited to an output of 20
-    #     """
-
-
+    def merge_tables(self, dataframe, left_on, right_on, join_cols, how='left'):
+        """
+        Merge DataFrames on specific columns with multiple csvs, limited to an output of 20
+        """
+        df = self.df
+        df = pd.merge(left= self.df, right=dataframe[join_cols], left_on=left_on, right_on=right_on, how=how)
+        self.df = df.head(20)
+        
 def db_engine(db_host:str, db_user:str, db_pass:str, db_name:str="spotify") -> sa.engine.Engine:
     """Using SqlAlchemy, create a database engine and return it
 
