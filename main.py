@@ -36,6 +36,9 @@ class DataLoader():
         df = self.df
         # add multiple column names together with a '-' to create unique columns
         df[index_name] = df[column_names].apply(lambda row: '-'.join(row.values.astype(str)), axis=1)
+        df[index_name] = df[column_names]
+        for column in column_names:
+            new_column_name = '-'.join(column)
         # use unique column to set as index
         df.set_index(index_name, inplace=True)
         self.df = df
@@ -80,7 +83,7 @@ def db_engine(db_host:str, db_user:str, db_pass:str, db_name:str="spotify") -> s
     Returns:
         sa.engine.Engine: sqlalchemy engine
     """
-    engine = sa.create_engine(f'mysql+pymsql://{db_user}:{db_pass}@{db_host}/{db_name}', future=True) 
+    engine = sa.create_engine(f'mysql+pymysql://{db_user}:{db_pass}@{db_host}/{db_name}', future=True) 
     return engine
 
 
