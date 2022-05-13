@@ -1,6 +1,3 @@
-"""
-Starter code. Finish implementing the methods in this code
-"""
 import pandas as pd
 import sqlalchemy as sa
 
@@ -14,15 +11,18 @@ class DataLoader():
         Args:
             filepath (str): file path to the CSV file
         """
+        df = pd.read_csv(filepath, header=0)
+
+        self.df = df
         pass
 
     def head(self) -> None:
         """
         prints the head of the dataframe to console
         """
-        pass
+        print(self.df.head())
 
-    def add_index(self, index_name:str, colum_names:list) -> None:
+    def add_index(self, index_name:str, column_names:list) -> None:
         """
         Create a dataframe index column from concatenating a series of column values. Column values are concatenated by a dash "-".
 
@@ -33,7 +33,13 @@ class DataLoader():
             index_name (str): the index column name
             colum_names (list): list of columns to concatenate into an index column
         """
-        pass
+        df = self.df
+        # add multiple column names together with a '-' to create unique columns
+        df[index_name] = df[column_names].apply(lambda row: '-'.join(row.values.astype(str)), axis=1)
+        # use unique column to set as index
+        df.set_index(index_name, inplace=True)
+        self.df = df
+        
 
     def sort(self, column_name:str) -> None:
         """
