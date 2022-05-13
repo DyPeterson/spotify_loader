@@ -61,6 +61,10 @@ class DataLoader():
             db_engine (SqlAlchemy Engine): SqlAlchemy engine (or connection) to use to insert into database
             db_table_name (str): name of database table to insert to
         """
+        df = self.df
+        # write to sql taking db table name as the name, db_engine as the engine if this already exists append it to existing table
+        # write 2000 rows at a time.
+        df.to_sql(db_table_name, db_engine, if_exists='append', chunksize=2000)
 
 
 
@@ -147,7 +151,7 @@ def main():
     """
     artist_filepath = './data/spotify_artists.csv'
     album_filepath = './data/spotify_albums.csv'
-    # instance data loader for both csvs
+    # instance data loader for both csv's
     artist_data = DataLoader(artist_filepath)
     album_data = DataLoader(album_filepath)
     # print head of both
@@ -163,6 +167,8 @@ def main():
     # create db metadata table/columns
     db_create_tables(engine)
     # load both in db
+    artist_data.load_to_db(engine,'artists')
+    album_data.load_to_db(engine,'albums')
 
 if __name__ == '__main__':
     main()
