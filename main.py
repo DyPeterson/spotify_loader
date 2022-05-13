@@ -153,7 +153,16 @@ def main():
     # print head of both
     artist_data.head()
     album_data.head()
-    # 
+    # set index of both data sets
+    artist_data.add_index('artist_index',['id'])
+    album_data.add_index('albums_index',['artist_id','id','release_date'])
+    # sort artist by name
+    artist_data.sort('name')
+    # create db engine
+    engine = db_engine(db_host='127.0.0.1', db_user='root', db_pass='mysql', db_name='spotify')
+    # create db metadata table/columns
+    db_create_tables(engine)
+    # load both in db
 
 if __name__ == '__main__':
     main()
